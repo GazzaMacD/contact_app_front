@@ -40,7 +40,7 @@ export default function App() {
                     </ul>
                 </nav>
             </div>
-            <main id="details">
+            <main id="detail">
                 <Outlet />
             </main>
         </>
