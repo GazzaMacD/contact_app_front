@@ -13,7 +13,7 @@ import appStylesHref from "./app.css?url";
 export default function App() {
     return (
         <>
-            <div id="sidebar">
+            <aside id="sidebar">
                 <h1>Contacts</h1>
                 <div>
                     <Form id="search-form" role="search">
@@ -40,7 +40,7 @@ export default function App() {
                         </li>
                     </ul>
                 </nav>
-            </div>
+            </aside>
             <main id="detail">
                 <Outlet />
             </main>
