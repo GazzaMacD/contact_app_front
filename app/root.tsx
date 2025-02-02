@@ -3,6 +3,7 @@ import {
     Scripts,
     ScrollRestoration,
     isRouteErrorResponse,
+    Outlet,
 } from "react-router";
 import type { Route } from "./+types/root";
 
@@ -39,6 +40,9 @@ export default function App() {
                     </ul>
                 </nav>
             </div>
+            <main id="details">
+                <Outlet />
+            </main>
         </>
     );
 }
