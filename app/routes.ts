@@ -6,9 +6,9 @@ import {
 } from "@react-router/dev/routes";
 
 export default [
-  layout("routes/sbr_layout.tsx", [
-    index("routes/sbr_home.tsx"),
-    route("contacts/:contactId", "routes/sbr_contact.tsx"),
+  layout("routes/sidebar/layout.tsx", [
+    index("routes/sidebar/home.tsx"),
+    route("contacts/:contactId", "routes/sidebar/contact.tsx"),
   ]),
   route("about", "routes/about.tsx"),
 ] satisfies RouteConfig;

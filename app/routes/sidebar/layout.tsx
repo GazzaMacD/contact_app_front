@@ -1,10 +1,10 @@
 import { Outlet, Link, Form } from "react-router";
-import { getContacts } from "../data";
-import type { Route } from "./+types/sbr_layout";
-import type { ContactRecord } from "../data";
+import { getContacts } from "../../data";
+import type { Route } from "../../routes/sidebar/+types/layout";
+import type { ContactRecord } from "../../data";
 import sbrLayoutStyles from "../styles/sbr_layout.css?url";
 
-export async function clientLoader() {
+export async function loader() {
   const contacts = await getContacts();
   return { contacts };
 }
