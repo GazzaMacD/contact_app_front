@@ -7,6 +7,7 @@ import {
   Link,
   Links,
   Meta,
+  redirect,
 } from "react-router";
 import appStyles from "./styles/app.css?url";
 import type { Route } from "./+types/root";
@@ -26,8 +27,8 @@ export function HydrateFallback() {
 }
 
 export async function action() {
-  const contact = createEmptyContact();
-  return contact;
+  const contact = await createEmptyContact();
+  return redirect(`/contacts/${contact.id}/edit`);
 }
 
 export default function App() {

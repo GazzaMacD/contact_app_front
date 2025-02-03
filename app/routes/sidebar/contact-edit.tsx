@@ -8,7 +8,7 @@ export async function action({ request, params }: Route.ActionArgs) {
   // currently no validation yet
   const updates = Object.fromEntries(formData);
   await updateContact(params.contactId, updates);
-  return redirect(`/contacts/${params.contactId}`);
+  return redirect(`/contacts/${params.contactId}/edit`);
 }
 
 export async function loader({ params }: Route.LoaderArgs) {
