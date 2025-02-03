@@ -5,9 +5,15 @@ import {
   isRouteErrorResponse,
   Outlet,
   Link,
+  Links,
+  Meta,
 } from "react-router";
-import appStylesHref from "./app.css?url";
+import appStyles from "./styles/app.css?url";
 import type { Route } from "./+types/root";
+
+export function links() {
+  return [{ rel: "stylesheet", href: appStyles }];
+}
 
 export function HydrateFallback() {
   return (
@@ -31,7 +37,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href={appStylesHref} />
+        <Meta />
+        <Links />
       </head>
       <body>
         {children}

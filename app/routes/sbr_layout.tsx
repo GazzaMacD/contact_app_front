@@ -2,10 +2,15 @@ import { Outlet, Link, Form } from "react-router";
 import { getContacts } from "../data";
 import type { Route } from "./+types/sbr_layout";
 import type { ContactRecord } from "../data";
+import sbrLayoutStyles from "../styles/sbr_layout.css?url";
 
 export async function clientLoader() {
   const contacts = await getContacts();
   return { contacts };
+}
+
+export function links() {
+  return [{ rel: "stylesheet", href: sbrLayoutStyles }];
 }
 
 export default function SidebarLayout({ loaderData }: Route.ComponentProps) {
