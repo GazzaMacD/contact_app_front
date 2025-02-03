@@ -1,5 +1,6 @@
-import { type RouteConfig, route } from "@react-router/dev/routes";
+import { type RouteConfig, route, index } from "@react-router/dev/routes";
 
 export default [
-    route("contacts/:contactId", "routes/contact.tsx"),
+  index("routes/home.tsx"),
+  route("contacts/:contactId", "routes/contact.tsx"),
 ] satisfies RouteConfig;
