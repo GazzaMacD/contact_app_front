@@ -2,7 +2,7 @@ import { Outlet, Link, Form } from "react-router";
 import { getContacts } from "../../data";
 import type { Route } from "../../routes/sidebar/+types/layout";
 import type { ContactRecord } from "../../data";
-import sbrLayoutStyles from "../styles/sbr_layout.css?url";
+import sbrLayoutStyles from "../../styles/sidebar.css?url";
 
 export async function loader() {
   const contacts = await getContacts();
