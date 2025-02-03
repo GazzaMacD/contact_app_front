@@ -29,7 +29,9 @@ export default function App({ loaderData }: Route.ComponentProps) {
   return (
     <>
       <aside id="sidebar">
-        <h1>Contacts</h1>
+        <h1>
+          <Link to="about">Contacts</Link>
+        </h1>
         <div>
           <Form id="search-form" role="search">
             <input
