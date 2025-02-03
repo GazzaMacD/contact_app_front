@@ -10,6 +10,7 @@ import {
 } from "react-router";
 import appStyles from "./styles/app.css?url";
 import type { Route } from "./+types/root";
+import { createEmptyContact } from "./data";
 
 export function links() {
   return [{ rel: "stylesheet", href: appStyles }];
@@ -22,6 +23,11 @@ export function HydrateFallback() {
       <p>Loading, please wait...</p>
     </div>
   );
+}
+
+export async function action() {
+  const contact = createEmptyContact();
+  return contact;
 }
 
 export default function App() {
