@@ -67,7 +67,7 @@ export default function EditContact({ loaderData }: Route.ComponentProps) {
       </label>
       <p>
         <button type="submit">Save</button>
-        <button type="button" onSubmit={() => navigate(-1)}>
+        <button type="button" onClick={() => navigate(-1)}>
           Cancel
         </button>
       </p>
