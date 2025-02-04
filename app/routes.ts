@@ -10,6 +10,7 @@ export default [
     index("routes/sidebar/home.tsx"),
     route("contacts/:contactId", "routes/sidebar/contact.tsx"),
     route("contacts/:contactId/edit", "routes/sidebar/contact-edit.tsx"),
+    route("contacts/:contactId/delete", "routes/sidebar/contact-delete.tsx"),
   ]),
   route("about", "routes/about.tsx"),
 ] satisfies RouteConfig;
