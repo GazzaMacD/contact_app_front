@@ -27,6 +27,9 @@ export default function SidebarLayout({ loaderData }: Route.ComponentProps) {
   const { contacts, q } = loaderData;
   const navigation = useNavigation();
   const submit = useSubmit();
+  const searching =
+    navigation.location &&
+    new URLSearchParams(navigation.location.search).has("q");
 
   React.useEffect(() => {
     const searchField = document.getElementById("search-form");
@@ -53,11 +56,12 @@ export default function SidebarLayout({ loaderData }: Route.ComponentProps) {
               aria-label="Search contacts"
               id="q"
               defaultValue={q || ""}
+              className={searching ? "loading" : ""}
               name="q"
               placeholder="Search"
               type="search"
             />
-            <div aria-hidden hidden={true} id="search-spinner" />
+            <div aria-hidden hidden={!searching} id="search-spinner" />
           </Form>
           <Form method="post">
             <button type="submit">New</button>
@@ -95,7 +99,9 @@ export default function SidebarLayout({ loaderData }: Route.ComponentProps) {
       </aside>
       <main
         id="detail"
-        className={navigation.state === "loading" ? "loading" : ""}
+        className={
+          navigation.state === "loading" && !searching ? "loading" : ""
+        }
       >
         <Outlet />
       </main>
