@@ -12,6 +12,8 @@ import {
 import appStyles from "./styles/app.css?url";
 import type { Route } from "./+types/root";
 import { createEmptyContact } from "./data";
+import { fetchData } from "./common/utils.server";
+import type { TContact } from "./common/types";
 
 export function links() {
   return [{ rel: "stylesheet", href: appStyles }];
@@ -27,8 +29,27 @@ export function HydrateFallback() {
 }
 
 export async function action() {
-  const contact = await createEmptyContact();
-  return redirect(`/contacts/${contact.id}/edit`);
+  const newContactObj = {
+    pub_id: "",
+    fn: "No Name",
+    non_latin_fn: "",
+    favorite: false,
+    x_handle: "",
+    avatar_url: "",
+    notes: "",
+  };
+  const res = await fetchData<TContact>(null, "/contacts/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newContactObj),
+  });
+  if (res.status === "error") {
+    throw new Response("Not found", { status: 404 });
+  }
+  const contact = res.data;
+  return redirect(`/contacts/${contact.pub_id}/edit`);
 }
 
 export default function App() {

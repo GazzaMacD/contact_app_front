@@ -2,6 +2,8 @@ import { Form, redirect, useNavigate } from "react-router";
 
 import type { Route } from "../../routes/sidebar/+types/contact-edit";
 import { getContact, updateContact } from "../../data";
+import type { TContact } from "../../common/types";
+import { fetchData } from "../../common/utils.server";
 
 export async function action({ request, params }: Route.ActionArgs) {
   const formData = await request.formData();
@@ -12,10 +14,13 @@ export async function action({ request, params }: Route.ActionArgs) {
 }
 
 export async function loader({ params }: Route.LoaderArgs) {
-  const contact = await getContact(params.contactId);
-  if (!contact) {
-    throw new Response("Not Found", { status: 404 });
+  //const contact = await getContact(params.contactId);
+  const url = `/contacts/${params.contactId}/`;
+  const res = await fetchData<TContact>(null, url);
+  if (res.status === "error") {
+    throw new Response("Not found", { status: 404 });
   }
+  const contact = res.data;
   return { contact };
 }
 
@@ -24,29 +29,32 @@ export default function EditContact({ loaderData }: Route.ComponentProps) {
   const navigate = useNavigate();
 
   return (
-    <Form key={contact.id} id="contact-form" method="post">
-      <p>
-        <span>Name</span>
+    <Form key={contact.pub_id} id="contact-form" method="post">
+      <label>
+        <span>Full Name</span>
         <input
-          aria-label="First name"
-          defaultValue={contact.first}
-          name="first"
-          placeholder="First"
+          aria-label="Full Name"
+          defaultValue={contact.fn}
+          name="fn"
+          placeholder="Full Name"
           type="text"
         />
+      </label>
+      <label>
+        <span>Non Latin</span>
         <input
           aria-label="Last name"
-          defaultValue={contact.last}
-          name="last"
-          placeholder="Last"
+          defaultValue={contact.non_latin_fn}
+          name="non_latin_fn"
+          placeholder="Non Latin Full Name e.g: 山田太郎"
           type="text"
         />
-      </p>
+      </label>
       <label>
-        <span>Twitter</span>
+        <span>X Handle</span>
         <input
-          defaultValue={contact.twitter}
-          name="twitter"
+          defaultValue={contact.x_handle}
+          name="x_handle"
           placeholder="@jack"
           type="text"
         />
@@ -55,8 +63,8 @@ export default function EditContact({ loaderData }: Route.ComponentProps) {
         <span>Avatar URL</span>
         <input
           aria-label="Avatar URL"
-          defaultValue={contact.avatar}
-          name="avatar"
+          defaultValue={contact.avatar_url}
+          name="avatar_url"
           placeholder="https://example.com/avatar.jpg"
           type="text"
         />
