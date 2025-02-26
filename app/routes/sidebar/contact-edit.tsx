@@ -7,9 +7,20 @@ import { fetchData } from "../../common/utils.server";
 
 export async function action({ request, params }: Route.ActionArgs) {
   const formData = await request.formData();
-  // currently no validation yet
+  // currently no validation yet, use zod
   const updates = Object.fromEntries(formData);
-  await updateContact(params.contactId, updates);
+  const url = `/contacts/${params.contactId}/`;
+  const res = await fetchData<TContact>(null, url, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updates),
+  });
+  if (res.status === "error") {
+    //THis should change, not handling errors
+    throw new Response("Not found", { status: 404 });
+  }
   return redirect(`/contacts/${params.contactId}`);
 }
 
@@ -17,6 +28,7 @@ export async function loader({ params }: Route.LoaderArgs) {
   //const contact = await getContact(params.contactId);
   const url = `/contacts/${params.contactId}/`;
   const res = await fetchData<TContact>(null, url);
+
   if (res.status === "error") {
     throw new Response("Not found", { status: 404 });
   }
