@@ -6,23 +6,38 @@ import {
   NavLink,
   useNavigation,
   useSubmit,
+  data,
 } from "react-router";
 import { getContacts } from "../../data";
 import type { Route } from "../../routes/sidebar/+types/layout";
 import type { ContactRecord } from "../../data";
 import sbrLayoutStyles from "../../styles/sidebar.css?url";
+import { fetchData } from "../../common/utils.server";
 
+import { TContacts } from "../../common/types";
+
+/*
+ * Server Code
+ */
 export async function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
   const q = url.searchParams.get("q");
-  const contacts = await getContacts(q);
-  return { contacts, q };
+  const res = await fetchData<TContacts>(null, "/contacts/");
+  if (res.status === "success") {
+    const { data: contacts } = res;
+
+    return { contacts, q };
+  }
+  throw data("Record Not found", { status: 404 });
 }
 
 export function links() {
   return [{ rel: "stylesheet", href: sbrLayoutStyles }];
 }
 
+/*
+ * Client Code
+ */
 export default function SidebarLayout({ loaderData }: Route.ComponentProps) {
   const { contacts, q } = loaderData;
   const navigation = useNavigation();
@@ -74,20 +89,14 @@ export default function SidebarLayout({ loaderData }: Route.ComponentProps) {
           {contacts.length ? (
             <ul>
               {contacts.map((contact) => (
-                <li key={contact.id}>
+                <li key={contact.pub_id}>
                   <NavLink
                     className={({ isActive, isPending }) => {
                       return isActive ? "active" : isPending ? "pending" : "";
                     }}
-                    to={`contacts/${contact.id}`}
+                    to={`contacts/${contact.pub_id}`}
                   >
-                    {contact.first || contact.last ? (
-                      <>
-                        {contact.first} {contact.last}
-                      </>
-                    ) : (
-                      <i>No Name</i>
-                    )}
+                    {contact.fn ? <>{contact.fn}</> : <i>No Name</i>}
                     {contact.favorite ? <span>★</span> : null}
                   </NavLink>
                 </li>

@@ -3,12 +3,17 @@ import { Form, useFetcher } from "react-router";
 import { getContact, updateContact } from "../../data";
 import type { ContactRecord } from "../../data";
 import type { Route } from "../../routes/sidebar/+types/contact";
+import type { TContact } from "../../common/types";
+import { fetchData } from "../../common/utils.server";
 
 export async function loader({ params }: Route.LoaderArgs) {
-  const contact = await getContact(params.contactId);
-  if (!contact) {
+  const url = `/contacts/${params.contactId}/`;
+  const res = await fetchData<TContact>(null, url);
+  //const contact = await getContact(params.contactId);
+  if (res.status === "error") {
     throw new Response("Not found", { status: 404 });
   }
+  const contact = res.data;
   return { contact };
 }
 
@@ -26,29 +31,21 @@ export default function Contact({ loaderData }: Route.ComponentProps) {
     <div id="contact">
       <div>
         <img
-          alt={`${contact.first} ${contact.last} avatar`}
-          key={contact.avatar}
-          src={contact.avatar}
+          alt={`${contact.fn} avatar`}
+          key={contact.avatar_url}
+          src={contact.avatar_url}
         />
       </div>
 
       <div>
         <h1>
-          {contact.first || contact.last ? (
-            <>
-              {contact.first} {contact.last}
-            </>
-          ) : (
-            <i>No Name</i>
-          )}
+          {contact.fn ? <>{contact.fn}</> : <i>No Name</i>}
           <Favorite contact={contact} />
         </h1>
 
-        {contact.twitter ? (
+        {contact.x_handle ? (
           <p>
-            <a href={`https://twitter.com/${contact.twitter}`}>
-              {contact.twitter}
-            </a>
+            <a href={`https://x.com/${contact.x_handle}`}>{contact.x_handle}</a>
           </p>
         ) : null}
 
