@@ -33,7 +33,7 @@ export default function Contact({ loaderData }: Route.ComponentProps) {
         <img
           alt={`${contact.fn} avatar`}
           key={contact.avatar_url}
-          src={contact.avatar_url}
+          src={contact.avatar_url ? contact.avatar_url : undefined}
         />
       </div>
 
@@ -42,6 +42,8 @@ export default function Contact({ loaderData }: Route.ComponentProps) {
           {contact.fn ? <>{contact.fn}</> : <i>No Name</i>}
           <Favorite contact={contact} />
         </h1>
+
+        {contact.non_latin_fn ? <p>{contact.non_latin_fn}</p> : null}
 
         {contact.x_handle ? (
           <p>
