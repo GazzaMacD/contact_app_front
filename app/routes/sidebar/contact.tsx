@@ -60,7 +60,7 @@ export default function Contact({ loaderData }: Route.ComponentProps) {
 
           <Form
             action="delete"
-            method="post"
+            method="delete"
             onSubmit={(event) => {
               const response = confirm(
                 "Please confirm you want to delete this record."
