@@ -4,7 +4,7 @@ import { getContact, updateContact } from "../../data";
 import type { ContactRecord } from "../../data";
 import type { Route } from "../../routes/sidebar/+types/contact";
 import type { TContact } from "../../common/types";
-import { fetchData } from "../../common/utils.server";
+import { fetchData, base } from "../../common/utils.server";
 
 export async function loader({ params }: Route.LoaderArgs) {
   const url = `/contacts/${params.contactId}/`;
@@ -14,7 +14,7 @@ export async function loader({ params }: Route.LoaderArgs) {
     throw new Response("Not found", { status: 404 });
   }
   const contact = res.data;
-  return { contact };
+  return { contact, base };
 }
 
 export async function action({ params, request }: Route.ActionArgs) {
@@ -25,15 +25,27 @@ export async function action({ params, request }: Route.ActionArgs) {
 }
 
 export default function Contact({ loaderData }: Route.ComponentProps) {
-  const { contact } = loaderData;
+  const { contact, base } = loaderData;
 
   return (
     <div id="contact">
       <div>
         <img
           alt={`${contact.fn} avatar`}
-          key={contact.avatar_url}
-          src={contact.avatar_url ? contact.avatar_url : undefined}
+          key={
+            contact.profile_image
+              ? contact.profile_image
+              : contact.avatar_url
+                ? contact.avatar_url
+                : contact.pub_id
+          }
+          src={
+            contact.profile_image
+              ? `${base.url}${contact.profile_image}`
+              : contact.avatar_url
+                ? contact.avatar_url
+                : "/images/default_profile.jpg"
+          }
         />
       </div>
 

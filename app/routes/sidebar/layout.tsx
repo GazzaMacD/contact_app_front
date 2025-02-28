@@ -14,7 +14,7 @@ import type { ContactRecord } from "../../data";
 import sbrLayoutStyles from "../../styles/sidebar.css?url";
 import { fetchData } from "../../common/utils.server";
 
-import { TContacts } from "../../common/types";
+import type { TContacts } from "../../common/types";
 
 /*
  * Server Code

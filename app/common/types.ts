@@ -8,6 +8,7 @@ export type TContact = {
   favorite: boolean;
   x_handle: string;
   avatar_url: string;
+  profile_image: string | null;
   notes: string;
 };
 

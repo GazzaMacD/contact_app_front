@@ -1,4 +1,10 @@
-const BASE_API_URL = process.env.VITE_BASE_API_URL;
+const BASE_URL = process.env.VITE_BASE_URL || "";
+const BASE_API_URL = process.env.VITE_BASE_API_URL || "";
+
+export const base = {
+  url: BASE_URL,
+  api_url: BASE_API_URL,
+};
 
 export async function fetchData<T>(
   fullUrl: string | null,
