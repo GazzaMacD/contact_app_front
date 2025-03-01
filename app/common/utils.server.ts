@@ -12,14 +12,16 @@ export async function fetchData<T>(
   options = {}
 ): Promise<
   | {
-      status: "success";
+      success: true;
+      status: number;
       data: T;
       error: null;
     }
   | {
-      status: "error";
+      success: false;
+      status: number;
       data: null;
-      error: Error | unknown;
+      error: Error | unknown | null;
     }
 > {
   const url = fullUrl ? fullUrl : `${BASE_API_URL}${path}`;
@@ -28,9 +30,12 @@ export async function fetchData<T>(
     const response = await fetch(url, options);
 
     if (!response.ok) {
-      throw new Error(
-        `Fetch failed. ${response.status} ${response.statusText}`
-      );
+      return {
+        success: false,
+        status: response.status,
+        data: null,
+        error: null,
+      };
     }
 
     const isJson = (response.headers.get("content-type") || "").includes(
@@ -39,13 +44,15 @@ export async function fetchData<T>(
     const data = isJson ? await response.json() : await response.text();
 
     return {
-      status: "success",
+      success: true,
+      status: response.status,
       data: data,
       error: null,
     };
   } catch (error) {
     return {
-      status: "error",
+      success: false,
+      status: 500,
       data: null,
       error: error,
     };

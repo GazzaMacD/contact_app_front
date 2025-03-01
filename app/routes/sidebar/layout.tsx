@@ -13,6 +13,7 @@ import type { Route } from "../../routes/sidebar/+types/layout";
 import type { ContactRecord } from "../../data";
 import sbrLayoutStyles from "../../styles/sidebar.css?url";
 import { fetchData } from "../../common/utils.server";
+import { ERROR_MSGS } from "../../common/error_messages";
 
 import type { TContacts } from "../../common/types";
 
@@ -23,12 +24,12 @@ export async function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
   const q = url.searchParams.get("q");
   const res = await fetchData<TContacts>(null, "/contacts/");
-  if (res.status === "success") {
-    const { data: contacts } = res;
-
-    return { contacts, q };
+  if (!res.success) {
+    // to be caught by the nearest error boundary
+    throw new Response(ERROR_MSGS[res.status].msg, { status: res.status });
   }
-  throw data("Record Not found", { status: 404 });
+  const contacts = res.data;
+  return { contacts, q };
 }
 
 export function links() {

@@ -4,6 +4,7 @@ import type { Route } from "../../routes/sidebar/+types/contact-edit";
 import { getContact, updateContact } from "../../data";
 import type { TContact } from "../../common/types";
 import { fetchData } from "../../common/utils.server";
+import { ERROR_MSGS } from "../../common/error_messages";
 
 export async function action({ request, params }: Route.ActionArgs) {
   const formData = await request.formData();
@@ -17,9 +18,10 @@ export async function action({ request, params }: Route.ActionArgs) {
     },
     body: JSON.stringify(updates),
   });
-  if (res.status === "error") {
-    //THis should change, not handling errors
-    throw new Response("Not found", { status: 404 });
+  if (!res.success) {
+    // to be caught by the nearest error boundary
+    // NOTE: NEED TO DEAL WITH ERRORS HERE
+    throw new Response(ERROR_MSGS[res.status].msg, { status: res.status });
   }
   return redirect(`/contacts/${params.contactId}`);
 }
@@ -29,8 +31,9 @@ export async function loader({ params }: Route.LoaderArgs) {
   const url = `/contacts/${params.contactId}/`;
   const res = await fetchData<TContact>(null, url);
 
-  if (res.status === "error") {
-    throw new Response("Not found", { status: 404 });
+  if (!res.success) {
+    // to be caught by the nearest error boundary
+    throw new Response(ERROR_MSGS[res.status].msg, { status: res.status });
   }
   const contact = res.data;
   return { contact };

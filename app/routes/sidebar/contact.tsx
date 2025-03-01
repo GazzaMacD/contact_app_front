@@ -5,13 +5,15 @@ import type { ContactRecord } from "../../data";
 import type { Route } from "../../routes/sidebar/+types/contact";
 import type { TContact } from "../../common/types";
 import { fetchData, base } from "../../common/utils.server";
+import { ERROR_MSGS } from "../../common/error_messages";
 
 export async function loader({ params }: Route.LoaderArgs) {
   const url = `/contacts/${params.contactId}/`;
   const res = await fetchData<TContact>(null, url);
   //const contact = await getContact(params.contactId);
-  if (res.status === "error") {
-    throw new Response("Not found", { status: 404 });
+  if (!res.success) {
+    // to be caught by the nearest error boundary
+    throw new Response(ERROR_MSGS[res.status].msg, { status: res.status });
   }
   const contact = res.data;
   return { contact, base };

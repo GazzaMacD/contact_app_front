@@ -14,6 +14,7 @@ import type { Route } from "./+types/root";
 import { createEmptyContact } from "./data";
 import { fetchData } from "./common/utils.server";
 import type { TContact } from "./common/types";
+import { ERROR_MSGS } from "./common/error_messages";
 
 export function links() {
   return [{ rel: "stylesheet", href: appStyles }];
@@ -45,8 +46,9 @@ export async function action() {
     },
     body: JSON.stringify(newContactObj),
   });
-  if (res.status === "error") {
-    throw new Response("Not found", { status: 404 });
+  if (!res.success) {
+    // to be caught by the nearest error boundary
+    throw new Response(ERROR_MSGS[res.status].msg, { status: res.status });
   }
   const contact = res.data;
   return redirect(`/contacts/${contact.pub_id}/edit`);
@@ -85,11 +87,8 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   let stack: string | undefined;
 
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? "404" : "Error";
-    details =
-      error.status === 404
-        ? "The requested page could not be found."
-        : error.statusText || details;
+    message = String(error.status);
+    details = ERROR_MSGS[error.status].msg;
   } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message;
     stack = error.stack;
