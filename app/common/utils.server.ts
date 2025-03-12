@@ -6,7 +6,7 @@ export const base = {
   api_url: BASE_API_URL,
 };
 
-export async function fetchData<T>(
+export async function fetchData<T, E>(
   fullUrl: string | null,
   path: string | null,
   options = {}
@@ -20,7 +20,7 @@ export async function fetchData<T>(
   | {
       success: false;
       status: number;
-      data: null;
+      data: E | null;
       error: Error | unknown | null;
     }
 > {
@@ -28,20 +28,19 @@ export async function fetchData<T>(
 
   try {
     const response = await fetch(url, options);
+    const isJson = (response.headers.get("content-type") || "").includes(
+      "application/json"
+    );
+    const data = isJson ? await response.json() : await response.text();
 
     if (!response.ok) {
       return {
         success: false,
         status: response.status,
-        data: null,
+        data: data,
         error: null,
       };
     }
-
-    const isJson = (response.headers.get("content-type") || "").includes(
-      "application/json"
-    );
-    const data = isJson ? await response.json() : await response.text();
 
     return {
       success: true,

@@ -12,4 +12,14 @@ export type TContact = {
   notes: string;
 };
 
+export type TContactErrors = {
+  fn?: string[];
+  non_latin_fn?: string[];
+  favorite?: string[];
+  x_handle?: string[];
+  avatar_url?: string[];
+  profile_image?: string[];
+  notes?: string[];
+};
+
 export type TContacts = TContact[];
