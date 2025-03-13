@@ -6,7 +6,7 @@ import { fetchData } from "../../common/utils.server";
 
 export async function action({ params }: Route.ActionArgs) {
   const url = `/contacts/${params.contactId}/`;
-  await fetchData<TContact>(null, url, {
+  await fetchData<TContact, null>(null, url, {
     method: "DELETE",
   });
   return redirect("/");
