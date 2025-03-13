@@ -9,7 +9,7 @@ import { ERROR_MSGS } from "../../common/error_messages";
 
 export async function loader({ params }: Route.LoaderArgs) {
   const url = `/contacts/${params.contactId}/`;
-  const res = await fetchData<TContact>(null, url);
+  const res = await fetchData<TContact, null>(null, url);
   //const contact = await getContact(params.contactId);
   if (!res.success) {
     // to be caught by the nearest error boundary
@@ -21,9 +21,23 @@ export async function loader({ params }: Route.LoaderArgs) {
 
 export async function action({ params, request }: Route.ActionArgs) {
   const formData = await request.formData();
-  return updateContact(params.contactId, {
-    favorite: formData.get("favorite") === "true",
-  });
+  const url = `/contacts/${params.contactId}/`;
+  try {
+    const res = await fetchData<TContact, null>(null, url, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        favorite: formData.get("favorite") === "true",
+      }),
+    });
+    if (!res.success) {
+      // to be caught by the nearest error boundary
+      throw new Response(ERROR_MSGS[res.status].msg, { status: res.status });
+    }
+    return res.data;
+  } catch (error) {
+    throw new Response(ERROR_MSGS[500].msg, { status: 500 });
+  }
 }
 
 export default function Contact({ loaderData }: Route.ComponentProps) {
